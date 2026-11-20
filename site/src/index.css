@@ -1,0 +1,166 @@
+@import "tailwindcss";
+
+@theme {
+  --font-sans: "Plus Jakarta Sans", ui-sans-serif, system-ui, sans-serif;
+  --color-canvas: #f8f9fa;
+  --color-ink: #111827;
+  --color-muted: #64748b;
+  --color-accent: #143a52;
+  --color-mint: #5eb8e8;
+  --color-leaf: #5fad8f;
+  --ease-out-expo: cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+html {
+  scroll-behavior: smooth;
+  scroll-padding-top: 88px;
+}
+
+body {
+  margin: 0;
+  font-family: var(--font-sans);
+  background: var(--color-canvas);
+  color: var(--color-ink);
+  -webkit-font-smoothing: antialiased;
+}
+
+/* Avoid overflow on html/body — it breaks position:sticky parallax stacks */
+#root {
+  overflow-x: clip;
+}
+
+img,
+video {
+  max-width: 100%;
+}
+
+::selection {
+  background: color-mix(in srgb, var(--color-mint) 35%, white);
+}
+
+.marquee-track {
+  width: max-content;
+}
+
+/* Mobile: horizontal snap carousel → tablet/desktop: grid */
+.h-scroll {
+  display: flex;
+  gap: 0.75rem;
+  overflow-x: auto;
+  overscroll-behavior-x: contain;
+  scroll-snap-type: x mandatory;
+  scroll-padding-inline: 0.75rem;
+  padding-bottom: 0.35rem;
+  -webkit-overflow-scrolling: touch;
+  scrollbar-width: none;
+}
+.h-scroll::-webkit-scrollbar {
+  display: none;
+}
+.h-scroll > * {
+  flex: 0 0 min(82vw, 19.5rem);
+  scroll-snap-align: start;
+  min-width: 0;
+}
+/* Stay carousel through tablet — used by trip cards before lg sticky stack */
+.h-scroll--mobile-only > * {
+  flex-basis: min(86vw, 22rem);
+}
+@media (min-width: 640px) {
+  .h-scroll:not(.h-scroll--mobile-only) {
+    display: grid;
+    gap: 1.25rem;
+    overflow: visible;
+    scroll-snap-type: none;
+    padding-bottom: 0;
+  }
+  .h-scroll:not(.h-scroll--mobile-only) > * {
+    flex: unset;
+    width: auto;
+    min-width: 0;
+  }
+  .h-scroll--2:not(.h-scroll--mobile-only) {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+  .h-scroll--3:not(.h-scroll--mobile-only) {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+@media (min-width: 1024px) {
+  .h-scroll--3:not(.h-scroll--mobile-only) {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+  }
+}
+
+/* Soft mint → leaf hover wash for white cards */
+.card-grad-hover {
+  position: relative;
+  isolation: isolate;
+  transition:
+    border-color 0.45s var(--ease-out-expo),
+    box-shadow 0.45s var(--ease-out-expo),
+    transform 0.45s var(--ease-out-expo);
+}
+.card-grad-hover::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  pointer-events: none;
+  z-index: 1;
+  opacity: 0;
+  transition: opacity 0.5s var(--ease-out-expo);
+  background:
+    radial-gradient(520px 280px at 0% 0%, rgba(94, 184, 232, 0.28), transparent 58%),
+    radial-gradient(460px 260px at 100% 100%, rgba(95, 173, 143, 0.24), transparent 58%),
+    linear-gradient(135deg, rgba(94, 184, 232, 0.1), transparent 42%, rgba(95, 173, 143, 0.12));
+}
+.card-grad-hover::after {
+  content: "";
+  position: absolute;
+  inset: 0 0 auto;
+  height: 3px;
+  border-radius: inherit;
+  border-bottom-left-radius: 0;
+  border-bottom-right-radius: 0;
+  pointer-events: none;
+  z-index: 2;
+  opacity: 0.55;
+  transition: opacity 0.45s var(--ease-out-expo), height 0.45s var(--ease-out-expo);
+  background: linear-gradient(90deg, #5eb8e8 0%, #5fad8f 55%, #143a52 100%);
+}
+.card-grad-hover:hover {
+  border-color: rgba(94, 184, 232, 0.45);
+  box-shadow:
+    0 18px 44px rgba(20, 58, 82, 0.12),
+    0 0 0 1px rgba(94, 184, 232, 0.08);
+}
+.card-grad-hover:hover::before {
+  opacity: 1;
+}
+.card-grad-hover:hover::after {
+  opacity: 1;
+  height: 4px;
+}
+.card-grad-hover > * {
+  position: relative;
+  z-index: 3;
+}
+
+/* Accent wash for dark / featured cards */
+.card-grad-hover--dark::before {
+  background:
+    radial-gradient(480px 260px at 10% 0%, rgba(94, 184, 232, 0.35), transparent 55%),
+    radial-gradient(420px 240px at 100% 100%, rgba(95, 173, 143, 0.28), transparent 55%),
+    linear-gradient(160deg, rgba(255, 255, 255, 0.06), transparent 50%);
+}
+.card-grad-hover--dark::after {
+  background: linear-gradient(90deg, #b8e4f5, #5eb8e8, #5fad8f, #fff);
+  opacity: 0.85;
+}
+.card-grad-hover--dark:hover {
+  border-color: rgba(255, 255, 255, 0.28);
+  box-shadow:
+    0 22px 48px rgba(20, 58, 82, 0.28),
+    inset 0 1px 0 rgba(255, 255, 255, 0.12);
+}

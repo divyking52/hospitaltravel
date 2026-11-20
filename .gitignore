@@ -1,0 +1,13 @@
+node_modules/
+dist/
+.DS_Store
+.env
+.env.*
+!.env.example
+.vercel
+*.log
+.vite/
+site/dist/
+site/node_modules/
+*.zip
+assets/_blogs-source.html
